@@ -1,0 +1,220 @@
+openapi: 3.0.0
+info:
+  title: Parent API
+  description: Parent resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: Parents
+    description: Parent resources and operations
+
+paths:
+  /parents:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Parents
+      summary: Creates a new parent
+      description: Creates a new parent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParentRequest'
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Invalid request, missing information, or failed to create a parent
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Parents
+      summary: Gets parents
+      description: Gets parent entries with specific filters.
+      parameters:
+        - in: query
+          name: user
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by user ID
+        - in: query
+          name: students
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by student ID
+        - in: query
+          name: school
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by school ID
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filter by parent name
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: Sorting criterion
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+          description: Record limit per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+          description: Page number
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve parents
+
+  /parents/{parentId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Parents
+      summary: Gets a specific parent
+      description: Gets a specific parent by parent ID.
+      parameters:
+        - in: path
+          name: parentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Parent ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or specific parent not found
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Parents
+      summary: Updates a specific parent
+      description: Updates a specific parent by parent ID.
+      parameters:
+        - in: path
+          name: parentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Parent ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateParentRequest'
+      responses:
+        '200':
+          description: Successfully updated
+        '400':
+          description: Invalid request or specific parent not updated
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Parents
+      summary: Deletes a specific parent
+      description: Deletes a specific parent by parent ID.
+      parameters:
+        - in: path
+          name: parentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Parent ID
+      responses:
+        '200':
+          description: Successfully deleted
+        '400':
+          description: Invalid request or specific parent not deleted
+
+  /parents/{parentId}/teachers:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Parents
+      summary: Gets teachers of students with a specific parent
+      description: Gets teachers of students with a specific parent by parent ID.
+      parameters:
+        - in: path
+          name: parentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Parent ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve teachers
+
+components:
+  schemas:
+    CreateParentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        email:
+          type: string
+          format: email
+          required: true
+        phone:
+          type: string
+          required: true
+        school:
+          type: string
+          format: customFormat
+          required: true
+      required:
+        - name
+        - email
+        - phone
+        - school
+
+    UpdateParentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        school:
+          type: string
+          format: customFormat
+      minProperties: 1
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

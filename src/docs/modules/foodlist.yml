@@ -1,0 +1,175 @@
+tags:
+  - name: FoodLists
+    description: Yemek listesi olusturma, alma, guncelleme ve silme islemleri
+
+paths:
+  /foodlists:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - FoodLists
+      summary: Yemek Listesi Olusturma
+      description: Yeni bir yemek listesi olusturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateFoodListRequest'
+      responses:
+        200:
+          description: Yemek listesi basariyla olusturuldu
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - FoodLists
+      summary: Tum Yemek Listelerini Getirme
+      description: Tum yemek listelerini getirir
+      parameters:
+        - name: school
+          in: query
+          description: Yemek listelerini okula gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: date
+          in: query
+          description: Yemek listelerini tarihe gore filtreler
+          required: false
+          type: string
+          format: date
+        - name: sortBy
+          in: query
+          description: Siralama yapmak icin alan adi
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa basina yemek listesi limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarasi
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Yemek listeleri basariyla getirildi
+
+  /foodlists/{foodListId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - FoodLists
+      summary: Yemek Listesi Getirme
+      description: Belirli bir yemek listesi getirir
+      parameters:
+        - name: foodListId
+          in: path
+          description: Getirilecek yemek listesinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli yemek listesi basariyla getirildi
+        404:
+          description: Yemek listesi bulunamadi
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - FoodLists
+      summary: Yemek Listesi Guncelleme
+      description: Belirli bir yemek listesini gunceller
+      parameters:
+        - name: foodListId
+          in: path
+          description: Guncellenecek yemek listesinin ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateFoodListRequest'
+      responses:
+        200:
+          description: Yemek listesi basariyla guncellendi
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - FoodLists
+      summary: Yemek Listesi Silme
+      description: Belirli bir yemek listesini siler
+      parameters:
+        - name: foodListId
+          in: path
+          description: Silinecek yemek listesinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Yemek listesi basariyla silindi
+        404:
+          description: Yemek listesi bulunamadi
+
+definitions:
+  CreateFoodListRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      menu:
+        type: array
+        items:
+          $ref: '#/definitions/FoodItem'
+      school:
+        type: string
+        required: true
+        format: objectId
+
+  UpdateFoodListRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      menu:
+        type: array
+        items:
+          $ref: '#/definitions/FoodItem'
+      school:
+        type: string
+        format: objectId
+    minProperties: 1
+
+  FoodItem:
+    type: object
+    properties:
+      main_dish:
+        type: string
+      appetizer:
+        type: string
+      soup:
+        type: string
+      dessert:
+        type: string
+      drink:
+        type: string

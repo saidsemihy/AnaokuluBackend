@@ -1,0 +1,185 @@
+tags:
+  - name: CourseSchedules
+    description: Ders programi olusturma, alma, guncelleme ve silme islemleri
+
+paths:
+  /courseschedules:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - CourseSchedules
+      summary: Ders Programi Olusturma
+      description: Yeni bir ders programi olusturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateCourseScheduleRequest'
+      responses:
+        200:
+          description: Ders programi basariyla olusturuldu
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - CourseSchedules
+      summary: Tum Ders Programlarini Getirme
+      description: Tum ders programlarini getirir
+      parameters:
+        - name: school
+          in: query
+          description: Ders programlarini okula gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: teacher
+          in: query
+          description: Ders programlarini ogretmene gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: classes
+          in: query
+          description: Ders programlarini sinifa gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: date
+          in: query
+          description: Ders programlarini tarihe gore filtreler
+          required: false
+          type: string
+          format: date
+        - name: sortBy
+          in: query
+          description: Siralama yapmak icin alan adi
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa basina ders programi limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarasi
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Ders programlari basariyla getirildi
+
+  /courseschedules/{courseScheduleId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - CourseSchedules
+      summary: Ders Programi Getirme
+      description: Belirli bir ders programini getirir
+      parameters:
+        - name: courseScheduleId
+          in: path
+          description: Getirilecek ders programinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli ders programi basariyla getirildi
+        404:
+          description: Ders programi bulunamadi
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - CourseSchedules
+      summary: Ders Programi Guncelleme
+      description: Belirli bir ders programini gunceller
+      parameters:
+        - name: courseScheduleId
+          in: path
+          description: Guncellenecek ders programinin ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateCourseScheduleRequest'
+      responses:
+        200:
+          description: Ders programi basariyla guncellendi
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - CourseSchedules
+      summary: Ders Programi Silme
+      description: Belirli bir ders programini siler
+      parameters:
+        - name: courseScheduleId
+          in: path
+          description: Silinecek ders programinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Ders programi basariyla silindi
+        404:
+          description: Ders programi bulunamadi
+
+definitions:
+  CreateCourseScheduleRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      time:
+        type: string
+      course:
+        type: string
+      teacher:
+        type: string
+        format: objectId
+      school:
+        type: string
+        required: true
+        format: objectId
+      classes:
+        type: string
+        format: objectId
+
+  UpdateCourseScheduleRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      time:
+        type: string
+      course:
+        type: string
+      teacher:
+        type: string
+        format: objectId
+      school:
+        type: string
+        format: objectId
+      classes:
+        type: string
+        format: objectId
+    minProperties: 1

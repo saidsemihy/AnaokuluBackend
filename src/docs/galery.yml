@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: galery API
+  description: galery resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: galery
+    description: galery resources and operations
+
+paths:
+  /galery:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - galery
+      summary: Upload Media
+      description: Uploads a media file to the galery.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                school:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Successfully uploaded
+        '400':
+          description: Invalid request, missing information, or failed to upload media
+      x-amazon-apigateway-integration:
+        uri: 'arn:aws:apigateway:{your-region}:s3-path/{bucket-name}/{path}'
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - galery
+      summary: Get Media
+      description: Gets a list of media items in the galery.
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Filter media items by type (e.g., image, video)
+        - in: query
+          name: school
+          schema:
+            type: string
+          description: Filter media items by school ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve media
+
+  /galery/{mediaId}:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - galery
+      summary: Delete Media
+      description: Deletes a media item from the galery.
+      parameters:
+        - in: path
+          name: mediaId
+          schema:
+            type: string
+            format: customFormat
+          required: true
+          description: ID of the media item to delete
+      responses:
+        '204':
+          description: Successfully deleted
+        '400':
+          description: Invalid request or failed to delete media
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,276 @@
+tags:
+  - name: UserActions
+    description: Kullanıcı eylemleri, öğretmen, okul yöneticisi, ebeveyn ve öğrenci işlemleri
+
+paths:
+  /actions/teacherAddClass:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Öğretmeni Sınıfa Ekleme
+      description: Bir öğretmeni belirli bir sınıfa ekler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/TeacherAddClassRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya öğretmen/sınıf bulunamadı
+
+  /actions/teacherRemoveClass:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Öğretmeni Sınıftan Çıkarma
+      description: Bir öğretmeni belirli bir sınıftan çıkarır
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/TeacherRemoveClassRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya öğretmen/sınıf bulunamadı
+
+  /actions/schoolManagerAddSchool:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Okul Yöneticisine Okul Ekleme
+      description: Bir okul yöneticisine belirli bir okulu ekler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/SchoolManagerAddSchoolRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya okul yöneticisi/okul bulunamadı
+
+  /actions/schoolManagerRemoveSchool:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Okul Yöneticisinden Okul Çıkarma
+      description: Bir okul yöneticisinden belirli bir okulu çıkarır
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/SchoolManagerRemoveSchoolRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya okul yöneticisi/okul bulunamadı
+
+  /actions/parentAddStudent:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Ebeveyn Öğrenci Ekleme
+      description: Bir ebeveyn belirli bir öğrenciyi ekler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ParentAddStudentRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya ebeveyn/öğrenci bulunamadı
+
+  /actions/parentRemoveStudent:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Ebeveyn Öğrenci Çıkarma
+      description: Bir ebeveyn belirli bir öğrenciyi çıkarır
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ParentRemoveStudentRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya ebeveyn/öğrenci bulunamadı
+
+  /actions/studentAddClass:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Öğrenci Sınıfa Ekleme
+      description: Bir öğrenciyi belirli bir sınıfa ekler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/StudentAddClassRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya öğrenci/sınıf bulunamadı
+
+  /actions/studentRemoveClass:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Öğrenci Sınıftan Çıkarma
+      description: Bir öğrenciyi belirli bir sınıftan çıkarır
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/StudentRemoveClassRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya öğrenci/sınıf bulunamadı
+
+  /actions/studentAddLaterParent:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - UserActions
+      summary: Öğrenciye Sonradan Ebeveyn Ekleme
+      description: Bir öğrenciye sonradan bir ebeveyn ekler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/StudentAddLaterParentRequest'
+      responses:
+        200:
+          description: İşlem başarıyla gerçekleştirildi
+        400:
+          description: Geçersiz istek, eksik bilgi veya öğrenci/ebeveyn bulunamadı
+
+definitions:
+  TeacherAddClassRequest:
+    type: object
+    properties:
+      teacherId:
+        type: string
+        customFormat: objectId
+      classId:
+        type: string
+        customFormat: objectId
+
+  TeacherRemoveClassRequest:
+    type: object
+    properties:
+      teacherId:
+        type: string
+        customFormat: objectId
+      classId:
+        type: string
+        customFormat: objectId
+
+  SchoolManagerAddSchoolRequest:
+    type: object
+    properties:
+      schoolManagerId:
+        type: string
+        customFormat: objectId
+      schoolId:
+        type: string
+        customFormat: objectId
+
+  SchoolManagerRemoveSchoolRequest:
+    type: object
+    properties:
+      schoolManagerId:
+        type: string
+        customFormat: objectId
+      schoolId:
+        type: string
+        customFormat: objectId
+
+  ParentAddStudentRequest:
+    type: object
+    properties:
+      parentId:
+        type: string
+        customFormat: objectId
+      studentId:
+        type: string
+        customFormat: objectId
+
+  ParentRemoveStudentRequest:
+    type: object
+    properties:
+      parentId:
+        type: string
+        customFormat: objectId
+      studentId:
+        type: string
+        customFormat: objectId
+
+  StudentAddClassRequest:
+    type: object
+    properties:
+      studentId:
+        type: string
+        customFormat: objectId
+      classId:
+        type: string
+        customFormat: objectId
+
+  StudentRemoveClassRequest:
+    type: object
+    properties:
+      studentId:
+        type: string
+        customFormat: objectId
+      classId:
+        type: string
+        customFormat: objectId
+
+  StudentAddLaterParentRequest:
+    type: object
+    properties:
+      parentId:
+        type: string
+        customFormat: objectId
+      name:
+        type: string
+      age:
+        type: string
+      school:
+        type: string
+        customFormat: objectId
+    required:
+      - studentId
+      - parentId
+      - name
+      - age
+      - school

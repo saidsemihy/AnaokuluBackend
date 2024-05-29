@@ -1,0 +1,163 @@
+tags:
+  - name: Announcements
+    description: Duyuru oluşturma, alma, güncelleme ve silme işlemleri
+
+paths:
+  /announcements:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Announcements
+      summary: Duyuru Oluşturma
+      description: Yeni bir duyuru oluşturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateAnnouncementRequest'
+      responses:
+        200:
+          description: Duyuru başarıyla oluşturuldu
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Announcements
+      summary: Tüm Duyuruları Getirme
+      description: Tüm duyuruları getirir
+      parameters:
+        - name: school
+          in: query
+          description: Duyuruları okula göre filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: class
+          in: query
+          description: Duyuruları sınıfa göre filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: title
+          in: query
+          description: Duyuruları başlığa göre filtreler
+          required: false
+          type: string
+        - name: sortBy
+          in: query
+          description: Sıralama yapmak için alan adı
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa başına duyuru limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarası
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Duyurular başarıyla getirildi
+
+  /announcements/{announcementId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Announcements
+      summary: Duyuru Getirme
+      description: Belirli bir duyuruyu getirir
+      parameters:
+        - name: announcementId
+          in: path
+          description: Getirilecek duyurunun ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli duyuru başarıyla getirildi
+        404:
+          description: Duyuru bulunamadı
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Announcements
+      summary: Duyuru Güncelleme
+      description: Belirli bir duyuruyu günceller
+      parameters:
+        - name: announcementId
+          in: path
+          description: Güncellenecek duyurunun ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateAnnouncementRequest'
+      responses:
+        200:
+          description: Duyuru başarıyla güncellendi
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Announcements
+      summary: Duyuru Silme
+      description: Belirli bir duyuruyu siler
+      parameters:
+        - name: announcementId
+          in: path
+          description: Silinecek duyurunun ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Duyuru başarıyla silindi
+        404:
+          description: Duyuru bulunamadı
+
+definitions:
+  CreateAnnouncementRequest:
+    type: object
+    properties:
+      title:
+        type: string
+        required: true
+      content:
+        type: string
+        required: true
+      school:
+        type: string
+        required: true
+        format: objectId
+
+  UpdateAnnouncementRequest:
+    type: object
+    properties:
+      title:
+        type: string
+      content:
+        type: string
+      school:
+        type: string
+        format: objectId
+
+    minProperties: 1

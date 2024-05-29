@@ -1,0 +1,162 @@
+tags:
+  - name: SchoolManagers
+    description: Okul yöneticisi oluşturma, alma, güncelleme ve silme işlemleri
+
+paths:
+  /schoolmanagers:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - SchoolManagers
+      summary: Okul Yöneticisi Oluşturma
+      description: Yeni bir okul yöneticisi oluşturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateSchoolManagerRequest'
+      responses:
+        200:
+          description: Okul yöneticisi başarıyla oluşturuldu
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - SchoolManagers
+      summary: Tüm Okul Yöneticilerini Getirme
+      description: Tüm okul yöneticilerini getirir
+      parameters:
+        - name: user
+          in: query
+          description: Okul yöneticilerini belirli bir kullanıcının ID'si ile filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: school
+          in: query
+          description: Okul yöneticilerini belirli bir okulun ID'si ile filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: name
+          in: query
+          description: Okul yöneticisi adına göre filtreleme yapar
+          required: false
+          type: string
+        - name: sortBy
+          in: query
+          description: Sıralama yapmak için alan adı
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa başına okul yöneticisi limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarası
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Okul yöneticileri başarıyla getirildi
+
+  /schoolmanagers/{schoolmanagerId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - SchoolManagers
+      summary: Okul Yöneticisi Getirme
+      description: Belirli bir okul yöneticisini getirir
+      parameters:
+        - name: schoolmanagerId
+          in: path
+          description: Getirilecek okul yöneticisinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli okul yöneticisi başarıyla getirildi
+        404:
+          description: Okul yöneticisi bulunamadı
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - SchoolManagers
+      summary: Okul Yöneticisi Güncelleme
+      description: Belirli bir okul yöneticisini günceller
+      parameters:
+        - name: schoolmanagerId
+          in: path
+          description: Güncellenecek okul yöneticisinin ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateSchoolManagerRequest'
+      responses:
+        200:
+          description: Okul yöneticisi başarıyla güncellendi
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - SchoolManagers
+      summary: Okul Yöneticisi Silme
+      description: Belirli bir okul yöneticisini siler
+      parameters:
+        - name: schoolmanagerId
+          in: path
+          description: Silinecek okul yöneticisinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Okul yöneticisi başarıyla silindi
+        404:
+          description: Okul yöneticisi bulunamadı
+
+definitions:
+  CreateSchoolManagerRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        required: true
+      email:
+        type: string
+        format: email
+        required: true
+      phone:
+        type: string
+        required: true
+
+  UpdateSchoolManagerRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+        format: email
+      phone:
+        type: string
+    minProperties: 1

@@ -1,0 +1,59 @@
+tags:
+  - name: Auth
+    description: Kullanıcı giriş ve doğrulama işlemleri
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Kullanıcı girişi
+      description: Kullanıcı girişi için telefon numarası ile doğrulama yapılır.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  description: Kullanıcı telefon numarası
+                  example: '05303892514'
+              required:
+                - phone
+      responses:
+        200:
+          description: Başarılı giriş
+
+  /auth/verify-otp:
+    post:
+      tags:
+        - Auth
+      summary: OTP Doğrulama
+      description: OTP ile kullanıcı doğrulaması yapılır.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  description: Kullanıcı telefon numarası
+                  example: '05303892514'
+                token:
+                  type: string
+                  description: OTP verify token
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+                otp:
+                  type: string
+                  description: OTP
+                  example: '111111'
+              required:
+                - phone
+                - otp
+      responses:
+        200:
+          description: OTP doğrulama başarılı
+        400:
+          description: Geçersiz istek, eksik bilgi veya hatalı OTP

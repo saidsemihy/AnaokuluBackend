@@ -1,0 +1,171 @@
+tags:
+  - name: Users
+    description: Kullanıcı oluşturma, alma, güncelleme ve silme işlemleri
+
+paths:
+  /users:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Kullanıcı Oluşturma
+      description: Yeni bir kullanıcı oluşturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateUserRequest'
+      responses:
+        200:
+          description: Kullanıcı başarıyla oluşturuldu
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Tüm Kullanıcıları Getirme
+      description: Tüm kullanıcıları getirir
+      parameters:
+        - name: phone
+          in: query
+          description: Kullanıcıları telefon numarasına göre filtreler
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: Kullanıcı adına göre filtreleme yapar
+          required: false
+          type: string
+        - name: role
+          in: query
+          description: Kullanıcı rolüne göre filtreleme yapar
+          required: false
+          type: string
+        - name: email
+          in: query
+          description: Kullanıcıları e-posta adresine göre filtreler
+          required: false
+          type: string
+        - name: sortBy
+          in: query
+          description: Sıralama yapmak için alan adı
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa başına kullanıcı limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarası
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Kullanıcılar başarıyla getirildi
+
+  /users/{userId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Kullanıcı Getirme
+      description: Belirli bir kullanıcıyı getirir
+      parameters:
+        - name: userId
+          in: path
+          description: Getirilecek kullanıcının ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli kullanıcı başarıyla getirildi
+        404:
+          description: Kullanıcı bulunamadı
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Kullanıcı Güncelleme
+      description: Belirli bir kullanıcıyı günceller
+      parameters:
+        - name: userId
+          in: path
+          description: Güncellenecek kullanıcının ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateUserRequest'
+      responses:
+        200:
+          description: Kullanıcı başarıyla güncellendi
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Kullanıcı Silme
+      description: Belirli bir kullanıcıyı siler
+      parameters:
+        - name: userId
+          in: path
+          description: Silinecek kullanıcının ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Kullanıcı başarıyla silindi
+        404:
+          description: Kullanıcı bulunamadı
+
+definitions:
+  CreateUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+      phone:
+        type: string
+        required: true
+      name:
+        type: string
+        required: true
+      role:
+        type: string
+        required: true
+        enum:
+          - parent
+          - admin
+          - teacher
+          - schoolmanager
+
+  UpdateUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      name:
+        type: string
+      phone:
+        type: string
+    minProperties: 1

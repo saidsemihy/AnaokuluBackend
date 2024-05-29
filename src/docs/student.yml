@@ -1,0 +1,192 @@
+openapi: 3.0.0
+info:
+  title: Student API
+  description: Student resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: Students
+    description: Student resources and operations
+
+paths:
+  /students:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Students
+      summary: Creates a new student
+      description: Creates a new student.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStudentRequest'
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Invalid request, missing information, or failed to create a student
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Students
+      summary: Gets students
+      description: Gets student entries with specific filters.
+      parameters:
+        - in: query
+          name: parent
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by parent ID
+        - in: query
+          name: school
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by school ID
+        - in: query
+          name: classes
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by class ID
+        - in: query
+          name: gender
+          schema:
+            type: string
+          description: Filter by gender
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: Sorting criterion
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+          description: Record limit per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+          description: Page number
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve students
+
+  /students/{studentId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Students
+      summary: Gets a specific student
+      description: Gets a specific student by student ID.
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Student ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or specific student not found
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Students
+      summary: Updates a specific student
+      description: Updates a specific student by student ID.
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Student ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStudentRequest'
+      responses:
+        '200':
+          description: Successfully updated
+        '400':
+          description: Invalid request or specific student not updated
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Students
+      summary: Deletes a specific student
+      description: Deletes a specific student by student ID.
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Student ID
+      responses:
+        '200':
+          description: Successfully deleted
+        '400':
+          description: Invalid request or specific student not deleted
+
+components:
+  schemas:
+    CreateStudentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        age:
+          type: string
+        gender:
+          type: string
+        school:
+          type: string
+          format: customFormat
+          required: true
+      required:
+        - name
+        - school
+
+    UpdateStudentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: string
+        gender:
+          type: string
+        school:
+          type: string
+          format: customFormat
+      minProperties: 1
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

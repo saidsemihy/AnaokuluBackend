@@ -1,0 +1,174 @@
+tags:
+  - name: MedicineTracks
+    description: Ilac takibi olusturma, alma, guncelleme ve silme islemleri
+
+paths:
+  /medicinetracks:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - MedicineTracks
+      summary: Ilac Takibi Olusturma
+      description: Yeni bir ilac takibi olusturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateMedicineTrackRequest'
+      responses:
+        200:
+          description: Ilac takibi basariyla olusturuldu
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - MedicineTracks
+      summary: Tum Ilac Takiplerini Getirme
+      description: Tum ilac takiplerini getirir
+      parameters:
+        - name: school
+          in: query
+          description: Ilac takiplerini okula gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: student
+          in: query
+          description: Ilac takiplerini ogrenciye gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: date
+          in: query
+          description: Ilac takiplerini tarihe gore filtreler
+          required: false
+          type: string
+          format: date
+        - name: sortBy
+          in: query
+          description: Siralama yapmak icin alan adi
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa basina ilac takibi limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarasi
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Ilac takipleri basariyla getirildi
+
+  /medicinetracks/{medicineTrackId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - MedicineTracks
+      summary: Ilac Takibi Getirme
+      description: Belirli bir ilac takibini getirir
+      parameters:
+        - name: medicineTrackId
+          in: path
+          description: Getirilecek ilac takibinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli ilac takibi basariyla getirildi
+        404:
+          description: Ilac takibi bulunamadi
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - MedicineTracks
+      summary: Ilac Takibi Guncelleme
+      description: Belirli bir ilac takibini gunceller
+      parameters:
+        - name: medicineTrackId
+          in: path
+          description: Guncellenecek ilac takibinin ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateMedicineTrackRequest'
+      responses:
+        200:
+          description: Ilac takibi basariyla guncellendi
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - MedicineTracks
+      summary: Ilac Takibi Silme
+      description: Belirli bir ilac takibini siler
+      parameters:
+        - name: medicineTrackId
+          in: path
+          description: Silinecek ilac takibinin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Ilac takibi basariyla silindi
+        404:
+          description: Ilac takibi bulunamadi
+
+definitions:
+  CreateMedicineTrackRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      medicine:
+        type: string
+      detail:
+        type: string
+      student:
+        type: string
+        required: true
+        format: objectId
+      school:
+        type: string
+        required: true
+        format: objectId
+
+  UpdateMedicineTrackRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      medicine:
+        type: string
+      detail:
+        type: string
+      student:
+        type: string
+        format: objectId
+      school:
+        type: string
+        format: objectId
+    minProperties: 1

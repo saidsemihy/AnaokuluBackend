@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  title: Class API
+  description: Class resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: Classes
+    description: Class resources and operations
+
+paths:
+  /classes:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Classes
+      summary: Creates a new class
+      description: Creates a new class.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClassRequest'
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Invalid request, missing information, or failed to create a class
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Classes
+      summary: Gets classes
+      description: Gets class entries with specific filters.
+      parameters:
+        - in: query
+          name: school
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by school ID
+        - in: query
+          name: teacher
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by teacher ID
+        - in: query
+          name: students
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by students ID
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filter by class name
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: Sorting criterion
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+          description: Record limit per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+          description: Page number
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve classes
+
+  /classes/{classId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Classes
+      summary: Gets a specific class
+      description: Gets a specific class by class ID.
+      parameters:
+        - in: path
+          name: classId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Class ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or specific class not found
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Classes
+      summary: Updates a specific class
+      description: Updates a specific class by class ID.
+      parameters:
+        - in: path
+          name: classId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Class ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClassRequest'
+      responses:
+        '200':
+          description: Successfully updated
+        '400':
+          description: Invalid request or specific class not updated
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Classes
+      summary: Deletes a specific class
+      description: Deletes a specific class by class ID.
+      parameters:
+        - in: path
+          name: classId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Class ID
+      responses:
+        '200':
+          description: Successfully deleted
+        '400':
+          description: Invalid request or specific class not deleted
+
+components:
+  schemas:
+    CreateClassRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        school:
+          type: string
+          format: customFormat
+          required: true
+      required:
+        - name
+        - school
+
+    UpdateClassRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        school:
+          type: string
+          format: customFormat
+      minProperties: 1
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

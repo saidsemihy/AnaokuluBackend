@@ -1,0 +1,195 @@
+tags:
+  - name: Documents
+    description: Belgelerin oluşturulması, alınması, güncellenmesi ve silinmesi
+
+paths:
+  /documents:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Documents
+      summary: Belge Oluşturma
+      description: Yeni bir belge oluşturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateDocumentRequest'
+      responses:
+        200:
+          description: Belge oluşturuldu
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Documents
+      summary: Tüm Belgeleri Getirme
+      description: Tüm belgeleri getirir
+      parameters:
+        - name: school
+          in: query
+          description: Belgeleri okul ID'si ile filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: classes
+          in: query
+          description: Belgeleri sınıf ID'si ile filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: student
+          in: query
+          description: Belgeleri öğrenci ID'si ile filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: name
+          in: query
+          description: Belge adıyla belgeleri filtreler
+          required: false
+          type: string
+        - name: type
+          in: query
+          description: Belge tipiyle belgeleri filtreler
+          required: false
+          type: string
+        - name: sortBy
+          in: query
+          description: Sıralama yapmak için alan adı
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa başına belge limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarası
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Belgeler başarıyla getirildi
+
+  /documents/{documentId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Documents
+      summary: Belge Getirme
+      description: Belirli bir belgeyi getirir
+      parameters:
+        - name: documentId
+          in: path
+          description: Getirilecek belgenin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli belge başarıyla getirildi
+        404:
+          description: Belge bulunamadı
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Documents
+      summary: Belge Güncelleme
+      description: Belirli bir belgeyi günceller
+      parameters:
+        - name: documentId
+          in: path
+          description: Güncellenecek belgenin ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateDocumentRequest'
+      responses:
+        200:
+          description: Belge başarıyla güncellendi
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Documents
+      summary: Belge Silme
+      description: Belirli bir belgeyi siler
+      parameters:
+        - name: documentId
+          in: path
+          description: Silinecek belgenin ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belge başarıyla silindi
+        404:
+          description: Belge bulunamadı
+
+definitions:
+  CreateDocumentRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+      school:
+        type: string
+        format: objectId
+        required: true
+      classes:
+        type: array
+        items:
+          type: string
+          format: objectId
+      students:
+        type: array
+        items:
+          type: string
+          format: objectId
+
+  UpdateDocumentRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+      school:
+        type: string
+        format: objectId
+      classes:
+        type: array
+        items:
+          type: string
+          format: objectId
+      students:
+        type: array
+        items:
+          type: string
+          format: objectId
+    minProperties: 1

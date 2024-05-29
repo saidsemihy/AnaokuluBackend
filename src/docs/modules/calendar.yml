@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  title: Calendar API
+  description: Calendar resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: Calendars
+    description: Calendar resources and operations
+
+paths:
+  /calendars:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Calendars
+      summary: Creates a new calendar entry
+      description: Creates a new calendar entry.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarRequest'
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Invalid request, missing information, or failed to create a calendar entry
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Calendars
+      summary: Gets calendars
+      description: Gets calendar entries with specific filters.
+      parameters:
+        - in: query
+          name: school
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by school ID
+        - in: query
+          name: classes
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by class ID
+        - in: query
+          name: lessonName
+          schema:
+            type: string
+          description: Filter by lesson name
+        - in: query
+          name: nameOfDay
+          schema:
+            type: number
+          description: Filter by day number
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: Sorting criterion
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+          description: Record limit per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+          description: Page number
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve calendars
+
+  /calendars/{calendarId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Calendars
+      summary: Gets a specific calendar entry
+      description: Gets a specific calendar entry by calendar ID.
+      parameters:
+        - in: path
+          name: calendarId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Calendar ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or specific calendar not found
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Calendars
+      summary: Updates a specific calendar entry
+      description: Updates a specific calendar entry by calendar ID.
+      parameters:
+        - in: path
+          name: calendarId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Calendar ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarRequest'
+      responses:
+        '200':
+          description: Successfully updated
+        '400':
+          description: Invalid request or specific calendar not updated
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Calendars
+      summary: Deletes a specific calendar entry
+      description: Deletes a specific calendar entry by calendar ID.
+      parameters:
+        - in: path
+          name: calendarId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Calendar ID
+      responses:
+        '200':
+          description: Successfully deleted
+        '400':
+          description: Invalid request or specific calendar not deleted
+
+components:
+  schemas:
+    CreateCalendarRequest:
+      type: object
+      properties:
+        lessonName:
+          type: string
+        nameOfDay:
+          type: number
+        hour:
+          type: number
+        minute:
+          type: number
+        lessonDuration:
+          type: number
+        school:
+          type: string
+          format: customFormat
+        classes:
+          type: string
+          format: customFormat
+      required:
+        - school
+
+    UpdateCalendarRequest:
+      type: object
+      properties:
+        lessonName:
+          type: string
+        nameOfDay:
+          type: number
+        hour:
+          type: number
+        minute:
+          type: number
+        lessonDuration:
+          type: number
+        school:
+          type: string
+          format: customFormat
+        classes:
+          type: string
+          format: customFormat
+      minProperties: 1
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

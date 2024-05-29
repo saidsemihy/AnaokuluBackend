@@ -1,0 +1,169 @@
+tags:
+  - name: DailyReports
+    description: Gunluk rapor olusturma, alma, guncelleme ve silme islemleri
+
+paths:
+  /dailyreports:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - DailyReports
+      summary: Gunluk Rapor Olusturma
+      description: Yeni bir gunluk rapor olusturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateDailyReportRequest'
+      responses:
+        200:
+          description: Gunluk rapor basariyla olusturuldu
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - DailyReports
+      summary: Tum Gunluk Raporlari Getirme
+      description: Tum gunluk raporlari getirir
+      parameters:
+        - name: school
+          in: query
+          description: Gunluk raporlari okula gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: student
+          in: query
+          description: Gunluk raporlari ogrenciye gore filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: date
+          in: query
+          description: Gunluk raporlari tarihe gore filtreler
+          required: false
+          type: string
+          format: date
+        - name: sortBy
+          in: query
+          description: Siralama yapmak icin alan adi
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa basina gunluk rapor limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarasi
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Gunluk raporlar basariyla getirildi
+
+  /dailyreports/{dailyReportId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - DailyReports
+      summary: Gunluk Rapor Getirme
+      description: Belirli bir gunluk rapor getirir
+      parameters:
+        - name: dailyReportId
+          in: path
+          description: Getirilecek gunluk raporun ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli gunluk rapor basariyla getirildi
+        404:
+          description: Gunluk rapor bulunamadi
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - DailyReports
+      summary: Gunluk Rapor Guncelleme
+      description: Belirli bir gunluk raporu gunceller
+      parameters:
+        - name: dailyReportId
+          in: path
+          description: Guncellenecek gunluk raporun ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateDailyReportRequest'
+      responses:
+        200:
+          description: Gunluk rapor basariyla guncellendi
+        400:
+          description: Gecersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - DailyReports
+      summary: Gunluk Rapor Silme
+      description: Belirli bir gunluk raporu siler
+      parameters:
+        - name: dailyReportId
+          in: path
+          description: Silinecek gunluk raporun ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Gunluk rapor basariyla silindi
+        404:
+          description: Gunluk rapor bulunamadi
+
+definitions:
+  CreateDailyReportRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      content:
+        type: string
+      student:
+        type: string
+        format: objectId
+      school:
+        type: string
+        required: true
+        format: objectId
+
+  UpdateDailyReportRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date
+      content:
+        type: string
+      student:
+        type: string
+        format: objectId
+      school:
+        type: string
+        format: objectId
+    minProperties: 1

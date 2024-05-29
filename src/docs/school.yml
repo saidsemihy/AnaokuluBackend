@@ -1,0 +1,168 @@
+tags:
+  - name: Schools
+    description: Okul oluşturma, alma, güncelleme ve silme işlemleri
+
+paths:
+  /schools:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Schools
+      summary: Okul Oluşturma
+      description: Yeni bir okul oluşturur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CreateSchoolRequest'
+      responses:
+        200:
+          description: Okul oluşturuldu
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Schools
+      summary: Tüm Okulları Getirme
+      description: Tüm okulları getirir
+      parameters:
+        - name: schoolmanager
+          in: query
+          description: Okulları okul müdürü ID'si ile filtreler
+          required: false
+          type: string
+          format: objectId
+        - name: name
+          in: query
+          description: Okul adıyla okulları filtreler
+          required: false
+          type: string
+        - name: sortBy
+          in: query
+          description: Sıralama yapmak için alan adı
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Sayfa başına okul limiti
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          description: Sayfa numarası
+          required: false
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Okullar başarıyla getirildi
+
+  /schools/{schoolId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Schools
+      summary: Okul Getirme
+      description: Belirli bir okulu getirir
+      parameters:
+        - name: schoolId
+          in: path
+          description: Getirilecek okulun ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Belirli okul başarıyla getirildi
+        404:
+          description: Okul bulunamadı
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Schools
+      summary: Okul Güncelleme
+      description: Belirli bir okulu günceller
+      parameters:
+        - name: schoolId
+          in: path
+          description: Güncellenecek okulun ID'si
+          required: true
+          type: string
+          format: objectId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateSchoolRequest'
+      responses:
+        200:
+          description: Okul başarıyla güncellendi
+        400:
+          description: Geçersiz istek, eksik bilgi
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Schools
+      summary: Okul Silme
+      description: Belirli bir okulu siler
+      parameters:
+        - name: schoolId
+          in: path
+          description: Silinecek okulun ID'si
+          required: true
+          type: string
+          format: objectId
+      responses:
+        200:
+          description: Okul başarıyla silindi
+        404:
+          description: Okul bulunamadı
+
+definitions:
+  CreateSchoolRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        required: true
+      address:
+        type: string
+      phone:
+        type: string
+        required: true
+      email:
+        type: string
+        format: email
+        required: true
+      website:
+        type: string
+      logo:
+        type: string
+
+  UpdateSchoolRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+        format: email
+      website:
+        type: string
+      logo:
+        type: string
+    minProperties: 1

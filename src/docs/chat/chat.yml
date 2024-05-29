@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: Messaging API
+  description: Messaging resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: Conversations
+    description: Conversation resources and operations
+
+paths:
+  /chat/send-message:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Conversations
+      summary: Send a Message
+      description: Sends a message to a specific receiver.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+      responses:
+        '201':
+          description: Successfully sent
+        '400':
+          description: Invalid request, missing information, or failed to send a message
+
+  /chat/messages:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Conversations
+      summary: Get Messages
+      description: Gets messages with specific filters.
+      parameters:
+        - in: query
+          name: receiverId
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by receiver ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve messages
+
+  /chat/user-conversations:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Conversations
+      summary: Get User Conversations
+      description: Gets conversations for a specific user with specific filters.
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve user conversations
+
+components:
+  schemas:
+    SendMessageRequest:
+      type: object
+      properties:
+        receiverId:
+          type: string
+          format: customFormat
+          required: true
+        message:
+          type: object
+          properties:
+            text:
+              type: string
+              required: true
+            type:
+              type: string
+              required: true
+      required:
+        - receiverId
+        - message
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

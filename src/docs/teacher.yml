@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  title: Teacher API
+  description: Teacher resources and operations API
+  version: 1.0.0
+
+tags:
+  - name: Teachers
+    description: Teacher resources and operations
+
+paths:
+  /teachers:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Creates a new teacher
+      description: Creates a new teacher.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeacherRequest'
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Invalid request, missing information, or failed to create a teacher
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Gets teachers
+      description: Gets teacher entries with specific filters.
+      parameters:
+        - in: query
+          name: school
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by school ID
+        - in: query
+          name: classes
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by class ID
+        - in: query
+          name: user
+          schema:
+            type: string
+            format: customFormat
+          description: Filter by user ID
+        - in: query
+          name: gender
+          schema:
+            type: string
+          description: Filter by gender
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filter by teacher name
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: Sorting criterion
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+          description: Record limit per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+          description: Page number
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve teachers
+
+  /teachers/{teacherId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Gets a specific teacher
+      description: Gets a specific teacher by teacher ID.
+      parameters:
+        - in: path
+          name: teacherId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Teacher ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or specific teacher not found
+
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Updates a specific teacher
+      description: Updates a specific teacher by teacher ID.
+      parameters:
+        - in: path
+          name: teacherId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Teacher ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeacherRequest'
+      responses:
+        '200':
+          description: Successfully updated
+        '400':
+          description: Invalid request or specific teacher not updated
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Deletes a specific teacher
+      description: Deletes a specific teacher by teacher ID.
+      parameters:
+        - in: path
+          name: teacherId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Teacher ID
+      responses:
+        '200':
+          description: Successfully deleted
+        '400':
+          description: Invalid request or specific teacher not deleted
+
+  /teachers/{teacherId}/students:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Gets students of a specific teacher
+      description: Gets students of a specific teacher by teacher ID.
+      parameters:
+        - in: path
+          name: teacherId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Teacher ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve students
+
+  /teachers/{teacherId}/parents:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Teachers
+      summary: Gets parents of students taught by a specific teacher
+      description: Gets parents of students taught by a specific teacher by teacher ID.
+      parameters:
+        - in: path
+          name: teacherId
+          required: true
+          schema:
+            type: string
+            format: customFormat
+          description: Teacher ID
+      responses:
+        '200':
+          description: Successfully retrieved
+        '400':
+          description: Invalid request or failed to retrieve parents
+
+components:
+  schemas:
+    CreateTeacherRequest:
+      type: object
+      properties:
+        gender:
+          type: string
+        name:
+          type: string
+          required: true
+        email:
+          type: string
+          format: email
+          required: true
+        phone:
+          type: string
+          required: true
+        school:
+          type: string
+          format: customFormat
+          required: true
+      required:
+        - name
+        - email
+        - phone
+        - school
+
+    UpdateTeacherRequest:
+      type: object
+      properties:
+        gender:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        school:
+          type: string
+          format: customFormat
+      minProperties: 1
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
